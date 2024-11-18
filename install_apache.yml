@@ -1,15 +1,14 @@
 ---
-- name: Install Apache
-  hosts: all
-  become: yes
+- name: Check Google Status
+  hosts: localhost
   tasks:
-    - name: Ensure Apache is installed
-      ansible.builtin.yum:
-        name: httpd
-        state: present
+    - name: Get HTTP status code from Google
+      ansible.builtin.uri:
+        url: https://www.google.com
+        method: GET
+        return_content: no
+      register: http_response
 
-    - name: Start and enable Apache
-      ansible.builtin.service:
-        name: httpd
-        state: started
-        enabled: true
+    - name: Print the status code
+      debug:
+        msg: "HTTP Status Code: {{ http_response.status }}"
